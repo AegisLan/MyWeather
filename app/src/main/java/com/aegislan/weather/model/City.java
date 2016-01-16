@@ -5,9 +5,27 @@ package com.aegislan.weather.model;
  */
 public class City {
     private int id;
-    private String cityName;
-    private String cityCode;
-    private int provinceId;
+    private String name;
+    private String pinyin;
+    private String province;
+
+
+    public City(int id, String name, String pinyin, String province) {
+        this.id = id;
+        this.name = name;
+        this.pinyin = pinyin;
+        this.province = province;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", pinyin='" + pinyin + '\'' +
+                ", province='" + province + '\'' +
+                '}';
+    }
 
     public int getId() {
         return id;
@@ -17,27 +35,27 @@ public class City {
         this.id = id;
     }
 
-    public String getCityName() {
-        return cityName;
+    public String getName() {
+        return name;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCityCode() {
-        return cityCode;
+    public String getPinyin() {
+        return pinyin;
     }
 
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
+    public void setPinyin(String pinyin) {
+        this.pinyin = pinyin;
     }
 
-    public int getProvinceId() {
-        return provinceId;
+    public String getProvince() {
+        return province;
     }
 
-    public void setProvinceId(int provinceId) {
-        this.provinceId = provinceId;
+    public void setProvince(String province) {
+        this.province = province;
     }
 }

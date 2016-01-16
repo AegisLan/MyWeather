@@ -31,5 +31,4 @@ dependencies {
     compile 'com.android.support:design:22.2.1'
     compile files('D:/Source/MyWeather/libs/gson-2.5.jar')
     compile project(':ptr-lib')
-    compile project(':VolleyPlus')
 }

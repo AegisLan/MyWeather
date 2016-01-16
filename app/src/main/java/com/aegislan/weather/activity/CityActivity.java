@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import com.aegislan.weather.R;
 
-import in.srain.cube.views.ptr.header.MaterialHeader;
 
 public class CityActivity extends Activity {
 
