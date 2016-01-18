@@ -17,14 +17,21 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+            <data android:mimeType="vnd.android.cursor.dir/CurrentCities" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activity.CityActivity" />
         <activity android:name=".activity.AddCityActivity"></activity>
+
+        <provider
+            android:name=".provider.WeatherInfoProvider"
+            android:authorities="com.aegislan.weather.provider.WeatherInfoProvider" />
+        <provider
+            android:name=".provider.CityProvider"
+            android:authorities="com.aegislan.weather.provider.CityProvider" />
     </application>
 
 </manifest>

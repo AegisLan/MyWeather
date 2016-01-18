@@ -20,22 +20,23 @@ import java.util.List;
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
     private final static String TAG = "DBOpenHelper";
-    public DBOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory
-            factory, int version) {
+    private static String name = "weather.db";
+    private static int version = 1;
 
-        super(context, name, factory, version);
+    public DBOpenHelper(Context context) {
+        super(context, name, null, version);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "onCreate");
         db.execSQL(CREATE_CITY);
         db.execSQL(CREATE_CURRENT_CITY);
+        db.execSQL(CREATE_WEATHER_DAY);
         InitCityTable(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        Log.d(TAG, "onUpgrade");
 
     }
     private int InitCityTable(SQLiteDatabase db) {
@@ -78,4 +79,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + "name text, "
             + "pinyin text, "
             + "province text)";
+
+    public static final String CREATE_WEATHER_DAY = "create table WeatherDay ("
+            + "id integer primary key, " + "city text, " + "temp integer, "
+            + "wind text, " + "windStrong text, " + "humidity text, "
+            + "time text, " + "isRadar bit, " + "Radar text"
+            + "njd text, " + "qy text)";
 }

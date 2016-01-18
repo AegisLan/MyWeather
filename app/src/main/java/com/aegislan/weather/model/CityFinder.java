@@ -15,7 +15,7 @@ public class CityFinder {
     public static City QueryCity(Context context,String cityName) {
         ContentResolver resolver = context.getContentResolver();
         Uri uri = Uri.parse("content://com.aegislan.weather.provider.CityProvider/City");
-        Cursor cursor = resolver.query(uri, null, "name = ？", new String[]{cityName}, null);
+        Cursor cursor = resolver.query(uri, null, "name = ?", new String[]{cityName}, null);
         City city = null;
         if(cursor != null && cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex("id"));

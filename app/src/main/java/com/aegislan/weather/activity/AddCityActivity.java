@@ -10,25 +10,25 @@ import android.widget.Toast;
 
 import com.aegislan.weather.R;
 import com.aegislan.weather.model.City;
-import com.aegislan.weather.model.CityProvider;
+import com.aegislan.weather.model.CityFinder;
+import com.aegislan.weather.model.CityManager;
+import com.aegislan.weather.provider.CityProvider;
 
 public class AddCityActivity extends Activity {
     Button button;
     EditText editText;
-    CityProvider provider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
         button = (Button) findViewById(R.id.bt_add);
         editText = (EditText) findViewById(R.id.et_name);
-        provider = CityProvider.getInstance();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = editText.getText().toString().trim();
                 if(!"".equals(name)) {
-                    City city = provider.getCityInfoByName(name);
+                    City city = CityFinder.QueryCity(AddCityActivity.this, name);
                     if(city != null) {
                         Intent intent = new Intent();
                         intent.putExtra("name",city.getName());

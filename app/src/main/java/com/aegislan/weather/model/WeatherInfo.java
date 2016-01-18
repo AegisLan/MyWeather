@@ -4,8 +4,8 @@ package com.aegislan.weather.model;
  * Created by AegisLan on 2016.1.14.
  */
 public class WeatherInfo {
-    private String city;
     private int cityId;
+    private String city;
     private int temp;
     private String wind;
     private String windStrong;
@@ -13,7 +13,7 @@ public class WeatherInfo {
     private String time;
     private boolean isRadar;
     private String Radar;
-    private String current;
+    private String njd;
     private String qy;
 
     public String getCity() {
@@ -88,12 +88,12 @@ public class WeatherInfo {
         Radar = radar;
     }
 
-    public String getCurrent() {
-        return current;
+    public String getNjd() {
+        return njd;
     }
 
-    public void setCurrent(String current) {
-        this.current = current;
+    public void setNjd(String njd) {
+        this.njd = njd;
     }
 
     public String getQy() {
@@ -103,4 +103,5 @@ public class WeatherInfo {
     public void setQy(String qy) {
         this.qy = qy;
     }
+
 }
