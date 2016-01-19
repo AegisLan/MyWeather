@@ -3,33 +3,30 @@ package com.aegislan.weather.model;
 /**
  * Created by AegisLan on 2016.1.14.
  */
+
 public class WeatherInfo {
-    private int cityId;
-    private String city;
+    private int id;
+    private String name;
     private int temp;
+    private String state;
     private String wind;
     private String windStrong;
-    private String humidity;
     private String time;
-    private boolean isRadar;
-    private String Radar;
-    private String njd;
-    private String qy;
 
-    public String getCity() {
-        return city;
+    public int getId() {
+        return id;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getCityId() {
-        return cityId;
+    public String getName() {
+        return name;
     }
 
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getTemp() {
@@ -38,6 +35,14 @@ public class WeatherInfo {
 
     public void setTemp(int temp) {
         this.temp = temp;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getWind() {
@@ -56,14 +61,6 @@ public class WeatherInfo {
         this.windStrong = windStrong;
     }
 
-    public String getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(String humidity) {
-        this.humidity = humidity;
-    }
-
     public String getTime() {
         return time;
     }
@@ -71,37 +68,4 @@ public class WeatherInfo {
     public void setTime(String time) {
         this.time = time;
     }
-
-    public boolean isRadar() {
-        return isRadar;
-    }
-
-    public void setIsRadar(boolean isRadar) {
-        this.isRadar = isRadar;
-    }
-
-    public String getRadar() {
-        return Radar;
-    }
-
-    public void setRadar(String radar) {
-        Radar = radar;
-    }
-
-    public String getNjd() {
-        return njd;
-    }
-
-    public void setNjd(String njd) {
-        this.njd = njd;
-    }
-
-    public String getQy() {
-        return qy;
-    }
-
-    public void setQy(String qy) {
-        this.qy = qy;
-    }
-
 }

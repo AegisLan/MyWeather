@@ -76,13 +76,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + "province text)";
     public static final String CREATE_CURRENT_CITY = "create table CurrentCity ("
             + "id integer primary key, "
-            + "name text, "
-            + "pinyin text, "
-            + "province text)";
+            + "name text)";
 
     public static final String CREATE_WEATHER_DAY = "create table WeatherDay ("
-            + "id integer primary key, " + "city text, " + "temp integer, "
-            + "wind text, " + "windStrong text, " + "humidity text, "
-            + "time text, " + "isRadar bit, " + "Radar text"
-            + "njd text, " + "qy text)";
+            + "id integer primary key, " + "name text, " + "temp integer, "
+            + "state text, "+ "wind text, " + "windStrong text, " + "time text)";
 }

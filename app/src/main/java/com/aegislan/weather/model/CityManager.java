@@ -19,8 +19,6 @@ public class CityManager {
         ContentValues values = new ContentValues();
         values.put("id",city.getId());
         values.put("name",city.getName());
-        values.put("pinyin", city.getPinyin());
-        values.put("province", city.getProvince());
         Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/CurrentCity");
         resolver.insert(uri,values);
     }
@@ -46,5 +44,21 @@ public class CityManager {
         ContentResolver resolver = context.getContentResolver();
         Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/CurrentCity");
         resolver.delete(uri,"id = ?",new String[]{city.getId()+""});
+    }
+
+    public static City FindCity(Context context,String cityName) {
+        ContentResolver resolver = context.getContentResolver();
+        Uri uri = Uri.parse("content://com.aegislan.weather.provider.CityProvider/City");
+        Cursor cursor = resolver.query(uri, null, "name = ?", new String[]{cityName}, null);
+        City city = null;
+        if(cursor != null && cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String name  = cursor.getString(cursor.getColumnIndex("name"));
+            String pinyin  = cursor.getString(cursor.getColumnIndex("pinyin"));
+            String province  = cursor.getString(cursor.getColumnIndex("province"));
+            city = new City(id,name,pinyin,province);
+            cursor.close();
+        }
+        return city;
     }
 }

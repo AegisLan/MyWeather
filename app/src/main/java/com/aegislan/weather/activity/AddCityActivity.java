@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 import com.aegislan.weather.R;
 import com.aegislan.weather.model.City;
-import com.aegislan.weather.model.CityFinder;
 import com.aegislan.weather.model.CityManager;
-import com.aegislan.weather.provider.CityProvider;
 
 public class AddCityActivity extends Activity {
     Button button;
@@ -28,7 +26,7 @@ public class AddCityActivity extends Activity {
             public void onClick(View view) {
                 String name = editText.getText().toString().trim();
                 if(!"".equals(name)) {
-                    City city = CityFinder.QueryCity(AddCityActivity.this, name);
+                    City city = CityManager.FindCity(AddCityActivity.this, name);
                     if(city != null) {
                         Intent intent = new Intent();
                         intent.putExtra("name",city.getName());

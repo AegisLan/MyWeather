@@ -7,6 +7,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,21 +18,20 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aegislan.weather.R;
+import com.aegislan.weather.controller.WeatherInfoRequest;
 import com.aegislan.weather.model.City;
 import com.aegislan.weather.model.CityManager;
-import com.aegislan.weather.provider.WeatherInfoProvider;
+import com.aegislan.weather.model.WeatherInfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private LoaderManager loaderManager;
     private ListView cityView;
     private CityAdapter adapter;
-    private List<CityInfo> list;
+    private List<WeatherInfo> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new OnFloatingButtonClickListener());
         cityView = (ListView) findViewById(R.id.city_view);
         list = new ArrayList<>();
-        CityInfo info = new CityInfo();
-        info.setCityName("成都");
-        list.add(info);
         adapter = new CityAdapter(this,R.layout.layout_weatherinfo,list);
         cityView.setAdapter(adapter);
         loaderManager = getLoaderManager();
@@ -90,14 +89,23 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_refresh) {
+            // TODO: 2016.1.19 添加刷新机制
+            int size = list.size();
+            int[] arrayId = new int[size];
+            Iterator<WeatherInfo> it = list.iterator();
+            for(int i = 0; i < size; ++i) {
+                arrayId[i] = it.next().getId();
+            }
+            WeatherInfoRequest.RefreshWeatherInfo(arrayId);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public class CityAdapter extends ArrayAdapter<CityInfo> {
+    public class CityAdapter extends ArrayAdapter<WeatherInfo> {
         private int resourceId;
-        private List<CityInfo> list;
-        public CityAdapter(Context context, int resource, List<CityInfo> objects) {
+        private List<WeatherInfo> list;
+        public CityAdapter(Context context, int resource, List<WeatherInfo> objects) {
             super(context, resource, objects);
             resourceId = resource;
             list = objects;
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getPosition(CityInfo item) {
+        public int getPosition(WeatherInfo item) {
             return super.getPosition(item);
         }
 
@@ -120,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            CityInfo info = getItem(position);
+            WeatherInfo info = getItem(position);
             View view;
             ViewHolder holder;
             if(convertView == null) {
@@ -133,14 +141,12 @@ public class MainActivity extends AppCompatActivity {
                 view = convertView;
                 holder = (ViewHolder) view.getTag();
             }
-            holder.cityName.setText(info.getCityName());
+            holder.cityName.setText(info.getName());
             StringBuilder builder = new StringBuilder("当前温度：");
-            builder.append(info.getCityTemp());
-            builder.append("°");
-            builder.append("风：");
-            builder.append(info.getWind());
-            builder.append(",");
-            builder.append(info.getWindStrong());
+            builder.append(info.getTemp());
+            builder.append("℃");
+            builder.append("|天气状况：");
+            builder.append(info.getState());
             holder.cityWeather.setText(builder.toString());
             return view;
         }
@@ -183,8 +189,9 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             list.clear();
             while (cursor.moveToNext()) {
-                CityInfo info = new CityInfo();
-                info.setCityName(cursor.getString(cursor.getColumnIndex("name")));
+                WeatherInfo info = new WeatherInfo();
+                info.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                info.setName(cursor.getString(cursor.getColumnIndex("name")));
                 list.add(info);
             }
             adapter.notifyDataSetChanged();
@@ -195,43 +202,19 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
-    private class CityInfo {
-        private String cityName;
-        private String cityTemp;
-        private String wind;
-        private String windStrong;
-
-        public String getCityName() {
-            return cityName;
+    public final static int WEATHERUPDATE = 1;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case WEATHERUPDATE:
+                    break;
+            }
+            super.handleMessage(msg);
         }
+    };
 
-        public void setCityName(String cityName) {
-            this.cityName = cityName;
-        }
-
-        public String getCityTemp() {
-            return cityTemp;
-        }
-
-        public void setCityTemp(String cityTemp) {
-            this.cityTemp = cityTemp;
-        }
-
-        public String getWind() {
-            return wind;
-        }
-
-        public void setWind(String wind) {
-            this.wind = wind;
-        }
-
-        public String getWindStrong() {
-            return windStrong;
-        }
-
-        public void setWindStrong(String windStrong) {
-            this.windStrong = windStrong;
-        }
+    public Handler getHandler() {
+        return handler;
     }
 }
