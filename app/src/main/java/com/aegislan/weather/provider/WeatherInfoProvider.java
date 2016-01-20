@@ -19,12 +19,14 @@ public class WeatherInfoProvider extends ContentProvider {
     private final static UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
     private final static int CURRENT_CICY = 1;
     private final static int WEATHER_DAY = 2;
-    private final static int WEATHER_WEEK = 3;
+    private final static int WEATHERS_DAY = 3;
+    private final static int WEATHER_WEEK = 4;
     private DBOpenHelper helper;
 
     static {
         matcher.addURI("com.aegislan.weather.provider.WeatherInfoProvider", "CurrentCity", CURRENT_CICY);
-        matcher.addURI("com.aegislan.weather.provider.WeatherInfoProvider", "WeatherDay", WEATHER_DAY);
+        matcher.addURI("com.aegislan.weather.provider.WeatherInfoProvider", "WeatherDay/#", WEATHER_DAY);
+        matcher.addURI("com.aegislan.weather.provider.WeatherInfoProvider", "WeatherDay", WEATHERS_DAY);
     }
 
     public WeatherInfoProvider() {
@@ -44,20 +46,15 @@ public class WeatherInfoProvider extends ContentProvider {
         long id;
         switch (flag) {
             case CURRENT_CICY:
-                id = ContentUris.parseId(uri);
-                String where = "where id = " + id;
-                if (selection != null && !selection.equals("")) {
-                    where += selection;
-                }
-                count = db.update("CurrentCity", values, where, selectionArgs);
+                count = db.update("CurrentCity", values, selection, selectionArgs);
                 break;
             case WEATHER_DAY:
                 id = ContentUris.parseId(uri);
-                String where1 = "where id = " + id;
+                String where = "id = " + id;
                 if (selection != null && !selection.equals("")) {
-                    where1 += selection;
+                    where += selection;
                 }
-                count = db.update("WeatherDay", values, where1, selectionArgs);
+                count = db.update("WeatherDay", values, where, selectionArgs);
                 break;
         }
         return count;
@@ -68,23 +65,17 @@ public class WeatherInfoProvider extends ContentProvider {
         int count = 0;
         int flag = matcher.match(uri);
         SQLiteDatabase db = helper.getWritableDatabase();
-        long id;
         switch (flag) {
             case CURRENT_CICY:
-                id = ContentUris.parseId(uri);
-                String where = "where id = " + id;
+                count = db.delete("CurrentCity", selection, selectionArgs);
+                break;
+            case WEATHER_DAY:
+                long id = ContentUris.parseId(uri);
+                String where = "id = " + id;
                 if (selection != null && !selection.equals("")) {
                     where += selection;
                 }
-                count = db.delete("CurrentCity", where, selectionArgs);
-                break;
-            case WEATHER_DAY:
-                id = ContentUris.parseId(uri);
-                String where1 = "where id = " + id;
-                if (selection != null && !selection.equals("")) {
-                    where1 += selection;
-                }
-                count = db.delete("WeatherDay", where1, selectionArgs);
+                count = db.delete("WeatherDay", where, selectionArgs);
                 break;
         }
         return count;
@@ -101,6 +92,14 @@ public class WeatherInfoProvider extends ContentProvider {
                 cursor = db.query("CurrentCity", projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case WEATHER_DAY:
+                long id = ContentUris.parseId(uri);
+                String where = "id = " + id;
+                if (selection != null && !selection.equals("")) {
+                    where += selection;
+                }
+                cursor = db.query("WeatherDay", projection, where, selectionArgs, null, null, sortOrder);
+                break;
+            case WEATHERS_DAY:
                 cursor = db.query("WeatherDay", projection, selection, selectionArgs, null, null, sortOrder);
                 break;
         }

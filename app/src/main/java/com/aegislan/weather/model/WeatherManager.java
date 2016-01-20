@@ -14,7 +14,7 @@ import java.util.List;
  * Created by AegisLan on 2016.1.17.
  */
 public class WeatherManager {
-    private static void AddCityWeather(Context context, WeatherInfo info) {
+    public static void AddCityWeather(Context context, WeatherInfo info) {
         ContentResolver resolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put("id", info.getId());
@@ -24,34 +24,35 @@ public class WeatherManager {
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay");
+        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         resolver.insert(uri, values);
     }
 
-    private static void RemoveCityWeather(Context context, WeatherInfo info) {
+    public static void RemoveCityWeather(Context context, WeatherInfo info) {
         ContentResolver resolver = context.getContentResolver();
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay");
-        resolver.delete(uri, "id = ?", new String[]{info.getId() + ""});
+        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
+        resolver.delete(uri, null, null);
     }
 
-    private static void UpdateCityWeather(Context context, WeatherInfo info) {
+    public static int UpdateCityWeather(Context context, WeatherInfo info) {
         ContentResolver resolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put("id", info.getId());
-        values.put("city", info.getName());
+        values.put("name", info.getName());
         values.put("temp", info.getTemp());
         values.put("state", info.getState());
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay");
-        resolver.update(uri, values, "id = ?", new String[]{info.getId() + ""});
+        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
+        int count = resolver.update(uri, values, null, null);
+        return count;
     }
 
-    private static WeatherInfo QueryCityWeather(Context context, int id) {
+    public static WeatherInfo QueryCityWeather(Context context, int id) {
         ContentResolver resolver = context.getContentResolver();
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay");
-        Cursor cursor = resolver.query(uri, null, "id = ?", new String[]{id + ""}, null);
+        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + id);
+        Cursor cursor = resolver.query(uri, null, null, null, null);
         WeatherInfo info = null;
         if(cursor != null && cursor.moveToNext()) {
             info = new WeatherInfo();

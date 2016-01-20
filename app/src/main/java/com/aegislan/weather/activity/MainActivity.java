@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aegislan.weather.R;
-import com.aegislan.weather.controller.WeatherInfoRequest;
+import com.aegislan.weather.model.WeatherInfoRequest;
 import com.aegislan.weather.model.City;
 import com.aegislan.weather.model.CityManager;
 import com.aegislan.weather.model.WeatherInfo;
@@ -36,7 +36,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final static int ADD_CITY = 1;
-    private final static int CITY_LOAD_ID = 100;
+    private final static int CITY_UPDATE_ID = 100;
+    private final static int WEATHER_UPDATE_ID = 101;
     private LoaderManager loaderManager;
     private ListView cityView;
     private CityAdapter adapter;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new CityAdapter(this,R.layout.layout_weatherinfo,list);
         cityView.setAdapter(adapter);
         loaderManager = getLoaderManager();
-        loaderManager.initLoader(CITY_LOAD_ID, null, callbacks);
+        loaderManager.initLoader(CITY_UPDATE_ID,null,callbacks);
     }
 
     @Override
@@ -90,14 +91,13 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_refresh) {
-            // TODO: 2016.1.19 添加刷新机制
             int size = list.size();
             int[] arrayId = new int[size];
             Iterator<WeatherInfo> it = list.iterator();
             for(int i = 0; i < size; ++i) {
                 arrayId[i] = it.next().getId();
             }
-            WeatherInfoRequest.RefreshWeatherInfo(arrayId);
+            WeatherInfoRequest.RefreshWeatherInfo(WEATHERUPDATE,handler,arrayId);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,10 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
             holder.cityName.setText(info.getName());
             StringBuilder builder = new StringBuilder("当前温度：");
-            builder.append(info.getTemp());
-            builder.append("℃");
-            builder.append("|天气状况：");
-            builder.append(info.getState());
+            builder.append(info.getTemp()).append("℃").append("  天气状况：").append(info.getState());
             holder.cityWeather.setText(builder.toString());
             return view;
         }
@@ -168,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                         String province = data.getStringExtra("province");
                         City city = new City(id, name, pinyin, province);
                         CityManager.AddCity(this, city);
-                        loaderManager.restartLoader(CITY_LOAD_ID, null, callbacks);
+                        loaderManager.restartLoader(CITY_UPDATE_ID, null, callbacks);
                         Toast.makeText(this, city.toString().trim(), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -179,22 +176,62 @@ public class MainActivity extends AppCompatActivity {
 
     private LoaderManager.LoaderCallbacks<Cursor> callbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
-        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/CurrentCity");
-            CursorLoader loader = new CursorLoader(MainActivity.this, uri, null, null, null, null);
+        public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+            CursorLoader loader = null;
+            switch (id) {
+                case CITY_UPDATE_ID:
+                    Uri cityUri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/CurrentCity");
+                    loader = new CursorLoader(MainActivity.this, cityUri, null, null, null, null);
+                    break;
+                case WEATHER_UPDATE_ID:
+                    Uri weatherUri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay");
+                    loader = new CursorLoader(MainActivity.this, weatherUri, null, null, null, null);
+                    break;
+            }
             return loader;
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-            list.clear();
-            while (cursor.moveToNext()) {
-                WeatherInfo info = new WeatherInfo();
-                info.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                info.setName(cursor.getString(cursor.getColumnIndex("name")));
-                list.add(info);
+            switch (loader.getId()) {
+                case CITY_UPDATE_ID:
+                    if(cursor == null) {
+                        return;
+                    }
+                    list.clear();
+                    while (cursor.moveToNext()) {
+                        WeatherInfo info = new WeatherInfo();
+                        info.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                        info.setName(cursor.getString(cursor.getColumnIndex("name")));
+                        list.add(info);
+                    }
+                    adapter.notifyDataSetChanged();
+                    cursor.close();
+                    break;
+                case WEATHER_UPDATE_ID:
+                    if(cursor == null) {
+                        return;
+                    }
+                    Toast.makeText(MainActivity.this,"刷新天气信息...",Toast.LENGTH_LONG).show();
+                    while (cursor.moveToNext()) {
+                        int cityId = cursor.getInt(cursor.getColumnIndex("id"));
+                        Iterator<WeatherInfo> it = list.iterator();
+                        while (it.hasNext()) {
+                            WeatherInfo info = it.next();
+                            if(info.getId() == cityId) {
+                                info.setWind(cursor.getString(cursor.getColumnIndex("wind")));
+                                info.setWindStrong(cursor.getString(cursor.getColumnIndex("windStrong")));
+                                info.setState(cursor.getString(cursor.getColumnIndex("state")));
+                                info.setTemp(cursor.getInt(cursor.getColumnIndex("temp")));
+                                info.setTime(cursor.getString(cursor.getColumnIndex("time")));
+                                break;
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    cursor.close();
+                    break;
             }
-            adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -208,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case WEATHERUPDATE:
+                    loaderManager.restartLoader(WEATHER_UPDATE_ID, null, callbacks);
                     break;
             }
             super.handleMessage(msg);
