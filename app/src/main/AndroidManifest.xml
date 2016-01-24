@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aegislan.weather">
+    package="com.aegisLan.weather">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
     <application
-        android:name=".WeatherApplication"
+        android:name="com.aegisLan.weather.WeatherApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name="com.aegisLan.weather.activity.MainActivity" >
             <data android:mimeType="vnd.android.cursor.dir/CurrentCities" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CityActivity" />
-        <activity android:name=".activity.AddCityActivity"></activity>
+        <activity
+            android:name="com.aegisLan.weather.activity.AddCityActivity" />
+        <activity
+            android:name="com.aegisLan.weather.activity.CityActivity"
+            android:theme="@style/CityTheme" />
+
 
         <provider
-            android:name=".provider.WeatherInfoProvider"
-            android:authorities="com.aegislan.weather.provider.WeatherInfoProvider" />
+            android:name="com.aegisLan.weather.provider.WeatherInfoProvider"
+            android:authorities="com.aegisLan.weather.provider.WeatherInfoProvider" />
         <provider
-            android:name=".provider.CityProvider"
-            android:authorities="com.aegislan.weather.provider.CityProvider" />
+            android:name="com.aegisLan.weather.provider.CityProvider"
+            android:authorities="com.aegisLan.weather.provider.CityProvider" />
     </application>
 
 </manifest>

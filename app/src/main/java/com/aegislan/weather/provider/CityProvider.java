@@ -1,4 +1,4 @@
-package com.aegislan.weather.provider;
+package com.aegisLan.weather.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.aegislan.weather.db.DBOpenHelper;
+import com.aegisLan.weather.db.DBOpenHelper;
 
 
 /**
@@ -21,7 +21,7 @@ public class CityProvider extends ContentProvider{
     private DBOpenHelper helper;
 
     static {
-        matcher.addURI("com.aegislan.weather.provider.CityProvider", "City", CITY);
+        matcher.addURI("com.aegisLan.weather.provider.CityProvider", "City", CITY);
     }
 
     public CityProvider() {

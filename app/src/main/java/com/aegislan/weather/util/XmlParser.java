@@ -1,11 +1,10 @@
-package com.aegislan.weather.util;
+package com.aegisLan.weather.util;
 
 import android.util.Log;
 
-import com.aegislan.weather.model.City;
+import com.aegisLan.weather.model.City;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;

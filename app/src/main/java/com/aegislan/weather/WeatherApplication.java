@@ -1,4 +1,4 @@
-package com.aegislan.weather;
+package com.aegisLan.weather;
 
 import android.app.Application;
 import android.content.Context;

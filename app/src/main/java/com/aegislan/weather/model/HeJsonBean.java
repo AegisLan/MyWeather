@@ -1,6 +1,4 @@
-package com.aegislan.weather.model;
-
-import java.util.List;
+package com.aegisLan.weather.model;
 
 /**
  * Created by AegisLan on 2016.1.20.

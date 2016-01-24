@@ -1,14 +1,10 @@
-package com.aegislan.weather.model;
+package com.aegisLan.weather.model;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-
-import com.aegislan.weather.util.HttpUtil;
-
-import java.util.List;
 
 /**
  * Created by AegisLan on 2016.1.17.
@@ -24,13 +20,13 @@ public class WeatherManager {
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
+        Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         resolver.insert(uri, values);
     }
 
     public static void RemoveCityWeather(Context context, WeatherInfo info) {
         ContentResolver resolver = context.getContentResolver();
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
+        Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         resolver.delete(uri, null, null);
     }
 
@@ -44,14 +40,14 @@ public class WeatherManager {
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
+        Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         int count = resolver.update(uri, values, null, null);
         return count;
     }
 
     public static WeatherInfo QueryCityWeather(Context context, int id) {
         ContentResolver resolver = context.getContentResolver();
-        Uri uri = Uri.parse("content://com.aegislan.weather.provider.WeatherInfoProvider/WeatherDay/" + id);
+        Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + id);
         Cursor cursor = resolver.query(uri, null, null, null, null);
         WeatherInfo info = null;
         if(cursor != null && cursor.moveToNext()) {

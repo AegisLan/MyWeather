@@ -1,15 +1,14 @@
-package com.aegislan.weather.db;
+package com.aegisLan.weather.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import com.aegislan.weather.R;
-import com.aegislan.weather.WeatherApplication;
-import com.aegislan.weather.model.City;
-import com.aegislan.weather.util.XmlParser;
+import com.aegisLan.weather.R;
+import com.aegisLan.weather.WeatherApplication;
+import com.aegisLan.weather.model.City;
+import com.aegisLan.weather.util.XmlParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +31,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CITY);
         db.execSQL(CREATE_CURRENT_CITY);
         db.execSQL(CREATE_WEATHER_DAY);
+        db.execSQL(CREATE_TRIGGER_INSERT);
+        db.execSQL(CREATE_TRIGGER_DELETE);
         InitCityTable(db);
     }
 
@@ -79,6 +80,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + "name text)";
 
     public static final String CREATE_WEATHER_DAY = "create table WeatherDay ("
-            + "id integer primary key, " + "name text, " + "temp integer, "
-            + "state text, "+ "wind text, " + "windStrong text, " + "time text)";
+            + "id integer primary key, " + "name text, " + "temp integer NULL, "
+            + "state text NULL, "+ "wind text NULL, " + "windStrong text NULL, " + "time text NULL)";
+
+    public static final String CREATE_TRIGGER_INSERT = " create trigger SyncWeatherInsert " +
+            "after insert on CurrentCity " +
+            "for each row " +
+            "begin " +
+            "insert into WeatherDay (id, name) values(new.id, new.name); " +
+            "end;";
+
+    public static final String CREATE_TRIGGER_DELETE = " create trigger SyncWeatherDelete " +
+            "before delete on CurrentCity " +
+            "for each row " +
+            "begin " +
+            "delete from WeatherDay where id = old.id; " +
+            "end;";
 }

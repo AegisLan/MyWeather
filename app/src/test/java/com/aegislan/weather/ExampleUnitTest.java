@@ -1,4 +1,4 @@
-package com.aegislan.weather;
+package com.aegisLan.weather;
 
 import org.junit.Test;
 

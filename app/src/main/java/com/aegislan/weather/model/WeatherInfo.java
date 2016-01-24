@@ -1,10 +1,12 @@
-package com.aegislan.weather.model;
+package com.aegisLan.weather.model;
+
+import java.io.Serializable;
 
 /**
  * Created by AegisLan on 2016.1.14.
  */
 
-public class WeatherInfo {
+public class WeatherInfo implements Serializable{
     private int id;
     private String name;
     private int temp;

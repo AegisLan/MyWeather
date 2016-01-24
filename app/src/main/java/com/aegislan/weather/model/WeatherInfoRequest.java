@@ -1,4 +1,4 @@
-package com.aegislan.weather.model;
+package com.aegisLan.weather.model;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -6,8 +6,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.aegislan.weather.WeatherApplication;
-import com.aegislan.weather.util.HttpUtil;
+import com.aegisLan.weather.WeatherApplication;
+import com.aegisLan.weather.util.HttpUtil;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -72,20 +72,22 @@ public class WeatherInfoRequest {
             try {
                 int count = WeatherManager.UpdateCityWeather(WeatherApplication.getAppContext(),info);
                 if(count == 0) {
-                    /***************更新影响0条记录，意味着不存在该记录，则添加该记录*************/
-                    WeatherManager.AddCityWeather(WeatherApplication.getAppContext(), info);
+                    Toast.makeText(WeatherApplication.getAppContext(), "未知的城市：" + info.getName(), Toast.LENGTH_LONG).show();
+                    return;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putString("name",info.getName());
             message.what = requestCode;
             message.arg1 = id;
+            message.setData(bundle);
             handler.sendMessage(message);
         }
         @Override
         public void onErrorResponse(VolleyError error) {
-            Toast.makeText(WeatherApplication.getAppContext(),"刷新失败...",Toast.LENGTH_LONG).show();
             Log.e("TAG", error.getMessage(), error);
         }
     }
