@@ -16,6 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by AegisLan on 2016.1.19.
  */
@@ -44,6 +47,70 @@ public class WeatherInfoRequest {
             this.handler = handler;
         }
 
+        private static List<HourForecastInfo> updateHourForecastDB(HeJsonBean heJsonBean) {
+            List<HourForecastInfo> list = new ArrayList<>();
+            if(heJsonBean == null) return list;
+            HeJsonBean.Hourly_forecast[] hourly_forecasts = heJsonBean.getHourly_forecast();
+            if(hourly_forecasts == null || hourly_forecasts.length == 0) return list;
+            int id = Integer.parseInt(heJsonBean.getBasic().getId().substring(2));
+            for(int i = 0; i < hourly_forecasts.length; ++i) {
+                HeJsonBean.Hourly_forecast forecast = hourly_forecasts[i];
+                HourForecastInfo info = new HourForecastInfo();
+                info.setId(id);
+                info.setTime(forecast.getDate());
+                info.setTemp(forecast.getTmp());
+                info.setHum(forecast.getHum());
+                info.setRainRate(forecast.getPop());
+                info.getWindInfo().setDir(forecast.getWind().getDir());
+                info.getWindInfo().setDescribe(forecast.getWind().getSc());
+                info.getWindInfo().setSpeed(forecast.getWind().getSpd());
+                list.add(info);
+            }
+            return list;
+        }
+
+        private static List<DayForecastInfo> updateDayForecastDB(HeJsonBean heJsonBean) {
+            List<DayForecastInfo> list = new ArrayList<>();
+            if(heJsonBean == null) return list;
+            HeJsonBean.Daily_forecast[] daily_forecasts = heJsonBean.getDaily_forecast();
+            if(daily_forecasts == null || daily_forecasts.length == 0) return list;
+            int id = Integer.parseInt(heJsonBean.getBasic().getId().substring(2));
+            for(int i = 0; i < daily_forecasts.length; ++i) {
+                HeJsonBean.Daily_forecast forecast = daily_forecasts[i];
+                DayForecastInfo info = new DayForecastInfo();
+                info.setId(id);
+                info.setTime(forecast.getDate());
+                info.setTempMax(forecast.getTmp().getMax());
+                info.setTempMin(forecast.getTmp().getMin());
+                info.setDayStateCode(forecast.getCond().getCode_d());
+                info.setNightStateCode(forecast.getCond().getCode_n());
+                info.setDayStateText(forecast.getCond().getTxt_d());
+                info.setNightStateText(forecast.getCond().getTxt_n());
+                info.setHum(forecast.getHum());
+                info.setRainRate(forecast.getPop());
+                info.getWindInfo().setDir(forecast.getWind().getDir());
+                info.getWindInfo().setDescribe(forecast.getWind().getSc());
+                info.getWindInfo().setSpeed(forecast.getWind().getSpd());
+                list.add(info);
+            }
+            return list;
+        }
+
+        private static WeatherInfo updateWeatherInfoDB(HeJsonBean heJsonBean) {
+            WeatherInfo info = null;
+            if(heJsonBean == null) return info;
+            info = new WeatherInfo();
+            int id = Integer.parseInt(heJsonBean.getBasic().getId().substring(2));
+            info.setId(id);
+            info.setName(heJsonBean.getBasic().getCity());
+            info.setTemp(heJsonBean.getNow().getTmp());
+            info.setState(heJsonBean.getNow().getCond().getTxt());
+            info.setWind(heJsonBean.getNow().getWind().getDir());
+            info.setWindStrong(heJsonBean.getNow().getWind().getSc() + "级");
+            info.setTime(heJsonBean.getBasic().getUpdate().getLoc());
+            return info;
+        }
+
         @Override
         public void onResponse(JSONObject response) {
             HeJsonBean heJsonBean = null;
@@ -54,35 +121,49 @@ public class WeatherInfoRequest {
                 heJsonBean = gson.fromJson(HeJsonObject.toString(), HeJsonBean.class);
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
             if(heJsonBean == null)
             {
                 Toast.makeText(WeatherApplication.getAppContext(),"刷新失败...",Toast.LENGTH_LONG).show();
                 return;
             }
-            WeatherInfo info = new WeatherInfo();
-            int id = Integer.parseInt(heJsonBean.getBasic().getId().substring(2));
-            info.setId(id);
-            info.setName(heJsonBean.getBasic().getCity());
-            info.setTemp(heJsonBean.getNow().getTmp());
-            info.setState(heJsonBean.getNow().getCond().getTxt());
-            info.setWind(heJsonBean.getNow().getWind().getDir());
-            info.setWindStrong(heJsonBean.getNow().getWind().getSc() + "级");
-            info.setTime(heJsonBean.getBasic().getUpdate().getLoc());
+            WeatherInfo info = updateWeatherInfoDB(heJsonBean);
+            if(info == null) return;
+
             try {
                 int count = WeatherManager.UpdateCityWeather(WeatherApplication.getAppContext(),info);
                 if(count == 0) {
-                    Toast.makeText(WeatherApplication.getAppContext(), "未知的城市：" + info.getName(), Toast.LENGTH_LONG).show();
+                    Log.e("UpdateCityWeather","未知的城市：" + info.getName());
                     return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            List<HourForecastInfo> hourList = updateHourForecastDB(heJsonBean);
+            try {
+                int count = WeatherManager.UpdateHourForecast(WeatherApplication.getAppContext(), info.getId(), hourList);
+                if(count == hourList.size()) {
+                    Log.e("UpdateHourForecast", "更新条目数不匹");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            List<DayForecastInfo> dayList = updateDayForecastDB(heJsonBean);
+            try {
+                int count = WeatherManager.UpdateDayForecast(WeatherApplication.getAppContext(), info.getId(), dayList);
+                if(count == dayList.size()) {
+                    Log.e("UpdateDayForecast","更新条目数不匹配");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Message message = new Message();
             Bundle bundle = new Bundle();
-            bundle.putString("name",info.getName());
+            bundle.putString("name", info.getName());
             message.what = requestCode;
-            message.arg1 = id;
+            message.arg1 = info.getId();
             message.setData(bundle);
             handler.sendMessage(message);
         }

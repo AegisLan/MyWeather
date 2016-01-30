@@ -112,22 +112,13 @@ public class AddCityActivity extends AppCompatActivity {
                 }
             }
         });
-        editText.requestFocus();
     }
 
     private void initToolbar() {
-        mToolbar.inflateMenu(R.menu.menu_addcity);
-        mToolbar.collapseActionView();
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                switch (item.getItemId()) {
-                    case R.id.action_settings:
-                        return true;
-                    default:
-                        return false;
-                }
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

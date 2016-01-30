@@ -1,14 +1,11 @@
 package com.aegisLan.weather.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,18 +19,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aegisLan.weather.R;
-import com.aegisLan.weather.adapter.CityAdapter;
+import com.aegisLan.weather.adapter.WeatherInfoAdapter;
 import com.aegisLan.weather.model.WeatherInfoRequest;
 import com.aegisLan.weather.model.City;
 import com.aegisLan.weather.model.CityManager;
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity
     private final static int WEATHER_UPDATE_ID = 100;
     private LoaderManager loaderManager;
     private ListView cityView;
-    private CityAdapter adapter;
+    private WeatherInfoAdapter adapter;
     private List<WeatherInfo> mWeatherInfoList;
     protected PtrFrameLayout mPtrFrameLayout;
     private MainActivityHandler mHandler;
@@ -87,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         /**************************初始化listView**********************/
         cityView = (ListView) findViewById(R.id.city_view);
         mWeatherInfoList = new ArrayList<>();
-        adapter = new CityAdapter(this,R.layout.layout_weatherinfo,mWeatherInfoList);
+        adapter = new WeatherInfoAdapter(this,R.layout.layout_weatherinfo,mWeatherInfoList);
         cityView.setAdapter(adapter);
         cityView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -309,6 +302,19 @@ public class MainActivity extends AppCompatActivity
                 // Handle the menu item
                 switch (item.getItemId()) {
                     case R.id.action_settings:
+                        return true;
+                    case R.id.action_about:
+                        return true;
+                    case R.id.action_refresh:
+                        int size = mWeatherInfoList.size();
+                        int[] arrayId = new int[size];
+                        Iterator<WeatherInfo> it = mWeatherInfoList.iterator();
+                        for (int i = 0; i < size; ++i) {
+                            WeatherInfo info = it.next();
+                            arrayId[i] = info.getId();
+                            mWait2RefreshCities.add(info.getName());
+                        }
+                        WeatherInfoRequest.RefreshWeatherInfo(MainActivityHandler.WEATHER_UPDATE, mHandler, arrayId);
                         return true;
                     default:
                         return false;

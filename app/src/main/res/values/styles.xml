@@ -1,23 +1,28 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorAppPrimary</item>
+        <item name="colorPrimaryDark">@color/colorAppPrimaryDark</item>
+        <item name="colorAccent">@color/colorAppAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AddActivityTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorOtherActivityPrimary</item>
+        <item name="colorPrimaryDark">@color/colorOtherActivityPrimaryDark</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
+    </style>
+
 
     <!-- Base application theme. -->
-    <style name="CityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="CityTheme" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/color_app_main</item>
-        <item name="colorPrimaryDark">@color/color_app_main</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="popupTheme">@style/popMenuStyle</item>
+        <item name="colorPrimary">@color/colorCityActivity</item>
+        <item name="colorPrimaryDark">@color/colorCityActivity</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
@@ -29,10 +34,5 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="popMenuStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:colorBackground">@color/color_app_main_bg</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
-    </style>
 
 </resources>

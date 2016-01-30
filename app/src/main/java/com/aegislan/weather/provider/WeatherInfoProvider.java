@@ -17,16 +17,19 @@ import com.aegisLan.weather.db.DBOpenHelper;
  */
 public class WeatherInfoProvider extends ContentProvider {
     private final static UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-    private final static int CURRENT_CICY = 1;
+    private final static int CURRENT_CITY = 1;
     private final static int WEATHER_DAY = 2;
     private final static int WEATHERS_DAY = 3;
-    private final static int WEATHER_WEEK = 4;
+    private final static int FORECAST_HOUR = 4;
+    private final static int FORECAST_DAY = 5;
     private DBOpenHelper helper;
 
     static {
-        matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "CurrentCity", CURRENT_CICY);
+        matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "CurrentCity", CURRENT_CITY);
         matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "WeatherDay/#", WEATHER_DAY);
         matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "WeatherDay", WEATHERS_DAY);
+        matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "ForecastHour", FORECAST_HOUR);
+        matcher.addURI("com.aegisLan.weather.provider.WeatherInfoProvider", "ForecastDay", FORECAST_DAY);
     }
 
     public WeatherInfoProvider() {
@@ -45,7 +48,7 @@ public class WeatherInfoProvider extends ContentProvider {
         SQLiteDatabase db = helper.getWritableDatabase();
         long id;
         switch (flag) {
-            case CURRENT_CICY:
+            case CURRENT_CITY:
                 count = db.update("CurrentCity", values, selection, selectionArgs);
                 break;
             case WEATHER_DAY:
@@ -66,7 +69,7 @@ public class WeatherInfoProvider extends ContentProvider {
         int flag = matcher.match(uri);
         SQLiteDatabase db = helper.getWritableDatabase();
         switch (flag) {
-            case CURRENT_CICY:
+            case CURRENT_CITY:
                 count = db.delete("CurrentCity", selection, selectionArgs);
                 break;
             case WEATHER_DAY:
@@ -76,6 +79,12 @@ public class WeatherInfoProvider extends ContentProvider {
                     where += selection;
                 }
                 count = db.delete("WeatherDay", where, selectionArgs);
+                break;
+            case FORECAST_HOUR:
+                count = db.delete("ForecastHour", selection, selectionArgs);
+                break;
+            case FORECAST_DAY:
+                count = db.delete("ForecastDay", selection, selectionArgs);
                 break;
         }
         return count;
@@ -88,7 +97,7 @@ public class WeatherInfoProvider extends ContentProvider {
         int flag = matcher.match(uri);
         SQLiteDatabase db = helper.getWritableDatabase();
         switch (flag) {
-            case CURRENT_CICY:
+            case CURRENT_CITY:
                 cursor = db.query("CurrentCity", projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case WEATHER_DAY:
@@ -102,6 +111,12 @@ public class WeatherInfoProvider extends ContentProvider {
             case WEATHERS_DAY:
                 cursor = db.query("WeatherDay", projection, selection, selectionArgs, null, null, sortOrder);
                 break;
+            case FORECAST_HOUR:
+                cursor = db.query("ForecastHour", projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case FORECAST_DAY:
+                cursor = db.query("ForecastDay", projection, selection, selectionArgs, null, null, sortOrder);
+                break;
         }
         return cursor;
     }
@@ -114,12 +129,20 @@ public class WeatherInfoProvider extends ContentProvider {
         Uri ret_uri = null;
         long id;
         switch (flag) {
-            case CURRENT_CICY:
+            case CURRENT_CITY:
                 id = db.insert("CurrentCity", null, contentValues);
                 ret_uri = ContentUris.withAppendedId(uri, id);
                 break;
             case WEATHER_DAY:
                 id = db.insert("WeatherDay", null, contentValues);
+                ret_uri = ContentUris.withAppendedId(uri, id);
+                break;
+            case FORECAST_HOUR:
+                id = db.insert("ForecastHour", null, contentValues);
+                ret_uri = ContentUris.withAppendedId(uri, id);
+                break;
+            case FORECAST_DAY:
+                id = db.insert("ForecastDay", null, contentValues);
                 ret_uri = ContentUris.withAppendedId(uri, id);
                 break;
         }
@@ -131,10 +154,16 @@ public class WeatherInfoProvider extends ContentProvider {
     public String getType(Uri uri) {
         int flag = matcher.match(uri);
         switch (flag) {
-            case CURRENT_CICY:
+            case CURRENT_CITY:
                 return "vnd.android.cursor.dir/CurrentCities";
             case WEATHER_DAY:
                 return "vnd.android.cursor.item/WeatherDay";
+            case WEATHERS_DAY:
+                return "vnd.android.cursor.dir/WeatherDay";
+            case FORECAST_HOUR:
+                return "vnd.android.cursor.dir/ForecastHour";
+            case FORECAST_DAY:
+                return "vnd.android.cursor.dir/ForecastDay";
         }
         return null;
     }

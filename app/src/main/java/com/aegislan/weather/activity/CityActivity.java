@@ -15,18 +15,30 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aegisLan.weather.R;
+import com.aegisLan.weather.adapter.DayWeatherAdapter;
+import com.aegisLan.weather.adapter.HourWeatherAdapter;
+import com.aegisLan.weather.model.DayForecastInfo;
+import com.aegisLan.weather.model.HourForecastInfo;
 import com.aegisLan.weather.model.WeatherInfo;
 import com.aegisLan.weather.model.WeatherInfoRequest;
 import com.aegisLan.weather.model.WeatherManager;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 
 public class CityActivity extends BaseActivity {
     private int[] mArrayCityId;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private CityActivityHandler mHandler;
     private Toolbar mToolbar;
 
     @Override
@@ -35,6 +47,7 @@ public class CityActivity extends BaseActivity {
         setContentView(R.layout.activity_city);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         initToolbar();
+        mHandler = new CityActivityHandler(this);
         Intent intent = getIntent();
         mArrayCityId = intent.getIntArrayExtra("arrayId");
         // Create the adapter that will return a fragment for each of the three
@@ -48,6 +61,12 @@ public class CityActivity extends BaseActivity {
     }
 
     private void initToolbar() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         mToolbar.inflateMenu(R.menu.menu_city);
         mToolbar.collapseActionView();
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -57,6 +76,8 @@ public class CityActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_settings:
                         return true;
+                    case R.id.action_refresh:
+
                     default:
                         return false;
                 }
@@ -76,12 +97,18 @@ public class CityActivity extends BaseActivity {
      */
     public static class PlaceholderFragment extends Fragment {
         private final static String CITY_ID = "id";
+        private final static String TAB_HOUR = "hour";
+        private final static String TAB_DAY = "day";
         private WeatherInfo mWeatherInfo;
-
         private int mCityId;
         private TextView mTvCityName;
         private TextView mTvCityTemp;
         private TextView mTvCityState;
+        private TabHost mTabHost;
+        private ListView mHourListView;
+        private ListView mDayListView;
+        private HourWeatherAdapter mHourAdapter;
+        private DayWeatherAdapter mDayAdapter;
 
         public PlaceholderFragment() {
         }
@@ -102,16 +129,43 @@ public class CityActivity extends BaseActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            mWeatherInfo = WeatherManager.QueryCityWeather(getActivity(), mCityId);
+            /***********************初始化UI*************************/
             View rootView = inflater.inflate(R.layout.fragment_city, container, false);
             mTvCityName = (TextView) rootView.findViewById(R.id.tv_city_name);
             mTvCityTemp = (TextView) rootView.findViewById(R.id.tv_temp);
             mTvCityState = (TextView) rootView.findViewById(R.id.tv_state);
+            mTabHost =(TabHost) rootView.findViewById(R.id.tabHost);
+            mTabHost.setup();
+            mTabHost.addTab(mTabHost.newTabSpec(TAB_HOUR).setIndicator("小时").setContent(R.id.layout_hour));
+            mTabHost.addTab(mTabHost.newTabSpec(TAB_DAY).setIndicator("天").setContent(R.id.layout_day));
+            mHourListView = (ListView) rootView.findViewById(R.id.hour_view);
+            mDayListView = (ListView) rootView.findViewById(R.id.day_view);
+            mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+                @Override
+                public void onTabChanged(String tabId) {
+                    if(tabId.equals(TAB_HOUR)) {
+
+                    }else if(tabId.equals(TAB_DAY)) {
+
+                    }
+                }
+            });
+            /***********************初始化数据*************************/
+            mWeatherInfo = WeatherManager.QueryCityWeather(getActivity(), mCityId);
             if (mWeatherInfo != null) {
                 mTvCityName.setText(mWeatherInfo.getName());
-                mTvCityTemp.setText("当前气温：" + mWeatherInfo.getTemp() + "℃");
+                mTvCityTemp.setText(mWeatherInfo.getTemp() + "℃");
                 mTvCityState.setText(mWeatherInfo.getState());
             }
+            /***********************初始化小时预报数据*************************/
+            List<HourForecastInfo> hourForecastInfoList = WeatherManager.QueryCityHourWeatherForecast(getActivity(), mCityId);
+            mHourAdapter = new HourWeatherAdapter(getActivity(),R.layout.layout_hourforecast,hourForecastInfoList);
+            mHourListView.setAdapter(mHourAdapter);
+            /***********************初始化每天预报数据*************************/
+            List<DayForecastInfo> dayForecastInfoList = WeatherManager.QueryCityDayWeatherForecast(getActivity(), mCityId);
+            mDayAdapter = new DayWeatherAdapter(getActivity(),R.layout.layout_dayforecast,dayForecastInfoList);
+            mDayListView.setAdapter(mDayAdapter);
+
             return rootView;
         }
     }
@@ -152,30 +206,26 @@ public class CityActivity extends BaseActivity {
             return null;
         }
     }
-
-    public final static int WEATHERUPDATE = 1;
-    private Handler handler = new Handler() {
+    public static class CityActivityHandler extends Handler {
+        public final static int WEATHER_UPDATE = 1;
+        WeakReference<CityActivity> mActivity;
+        public CityActivityHandler(CityActivity activity) {
+            super();
+            mActivity = new WeakReference<>(activity);
+        }
         @Override
         public void handleMessage(Message msg) {
+            CityActivity theActivity = mActivity.get();
             switch (msg.what) {
-                case WEATHERUPDATE:
-                    int position = mViewPager.getCurrentItem();
-                    int cityId = mArrayCityId[position];
+                case WEATHER_UPDATE:
+                    int position = theActivity.mViewPager.getCurrentItem();
+                    int cityId = theActivity.mArrayCityId[position];
                     if (cityId == msg.arg1) {
                         // TODO: 2016.1.23  刷新界面
                     }
                     break;
             }
             super.handleMessage(msg);
-        }
-    };
-
-    private class OnFloatingButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            int position = mViewPager.getCurrentItem();
-            int cityId = mArrayCityId[position];
-            WeatherInfoRequest.RefreshWeatherInfo(WEATHERUPDATE, handler, new int[]{cityId});
         }
     }
 }

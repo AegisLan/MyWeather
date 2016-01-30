@@ -36,7 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintColor(getColor(R.color.color_app_main));
+            tintManager.setStatusBarTintColor(getColor(R.color.colorCityActivity));
             tintManager.setStatusBarTintEnabled(true);
         }
         mDecorView = getWindow().getDecorView();

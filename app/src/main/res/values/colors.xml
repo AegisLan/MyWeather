@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorGreenBlue">#1E90FF</color>
-    <color name="color_app_main">#00000000</color>
-    <color name="color_app_main_bg">@android:color/white</color>
-    <color name="window_background">#ffbebebe</color>
+    <color name="colorAppPrimary">#3F51B5</color>
+    <color name="colorAppPrimaryDark">#303F9F</color>
+    <color name="colorAppAccent">#8B8386</color>
+    <color name="colorOtherActivityPrimary">#8B8386</color>
+    <color name="colorOtherActivityPrimaryDark">#8B8386</color>
+    <color name="colorCityActivity">#00000000</color>
+    <color name="city_background">#EE00B2EE</color>
 </resources>

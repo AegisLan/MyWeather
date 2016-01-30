@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * Created by AegisLan on 2016.1.24.
  */
-public class CityAdapter extends ArrayAdapter<WeatherInfo>{
+public class WeatherInfoAdapter extends ArrayAdapter<WeatherInfo>{
     private class ViewHolder {
         TextView cityName;
         TextView cityWeather;
     }
     private int resourceId;
     private List<WeatherInfo> list;
-    public CityAdapter(Context context, int resource, List<WeatherInfo> objects) {
+    public WeatherInfoAdapter(Context context, int resource, List<WeatherInfo> objects) {
         super(context, resource, objects);
         resourceId = resource;
         list = objects;
@@ -63,8 +63,8 @@ public class CityAdapter extends ArrayAdapter<WeatherInfo>{
             holder = (ViewHolder) view.getTag();
         }
         holder.cityName.setText(info.getName());
-        StringBuilder builder = new StringBuilder("当前温度：");
-        builder.append(info.getTemp()).append("℃").append("  天气状况：").append(info.getState());
+        StringBuilder builder = new StringBuilder();
+        builder.append(info.getState()).append(" ").append(info.getTemp()).append("℃");
         holder.cityWeather.setText(builder.toString());
         return view;
     }

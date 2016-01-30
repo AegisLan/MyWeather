@@ -632,7 +632,7 @@ public class HeJsonBean {
     public static class Hourly_forecast {
         private String date;
         private int hum;
-        private float pop;
+        private int pop;
         private int pres;
         private int tmp;
         private Wind wind;
@@ -653,11 +653,11 @@ public class HeJsonBean {
             this.hum = hum;
         }
 
-        public float getPop() {
+        public int getPop() {
             return pop;
         }
 
-        public void setPop(float pop) {
+        public void setPop(int pop) {
             this.pop = pop;
         }
 

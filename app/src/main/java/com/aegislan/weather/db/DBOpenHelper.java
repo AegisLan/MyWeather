@@ -20,7 +20,7 @@ import java.util.List;
 public class DBOpenHelper extends SQLiteOpenHelper {
     private final static String TAG = "DBOpenHelper";
     private static String name = "weather.db";
-    private static int version = 1;
+    private static int version = 2;
 
     public DBOpenHelper(Context context) {
         super(context, name, null, version);
@@ -34,11 +34,18 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TRIGGER_INSERT);
         db.execSQL(CREATE_TRIGGER_DELETE);
         InitCityTable(db);
+        onUpgrade(db,1,version);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        switch(oldVersion) {
+            case 1:
+                db.execSQL(CREATE_FORECAST_HOUR);
+                db.execSQL(CREATE_FORECAST_DAY);
+                db.execSQL(CREATE_TRIGGER_DELETE_FORECAST_HOUR);
+                db.execSQL(CREATE_TRIGGER_DELETE_FORECAST_DAY);
+        }
     }
     private int InitCityTable(SQLiteDatabase db) {
         InputStream is = WeatherApplication.getAppContext().getResources().openRawResource(R.raw.citylist);
@@ -95,5 +102,29 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             "for each row " +
             "begin " +
             "delete from WeatherDay where id = old.id; " +
+            "end;";
+
+    public static final String CREATE_FORECAST_HOUR = "create table ForecastHour ("
+            + "id integer, " + "time smallDatetime, " + "temp integer NULL, " + "hum integer NULL, "
+            + "rainRate integer NULL, " + "windDir text NULL, "+ "windDescribe text NULL, " + "windSpeed integer NULL)";
+
+    public static final String CREATE_FORECAST_DAY = "create table ForecastDay ("
+            + "id integer, " + "time Date, " + "tempMax integer NULL, " + "tempMin integer NULL, "
+            + "dayStateCode integer NULL, " + "nightStateCode integer NULL, " + "dayState text NULL, " + "nightState text NULL, "
+            + "hum integer NULL, " + "rainRate integer NULL, " + "windDir text NULL, "+ "windDescribe text NULL, "
+            + "windSpeed integer NULL)";
+
+    public static final String CREATE_TRIGGER_DELETE_FORECAST_HOUR = " create trigger SyncHourForecastDelete " +
+            "before delete on CurrentCity " +
+            "for each row " +
+            "begin " +
+            "delete from ForecastHour where id = old.id; " +
+            "end;";
+
+    public static final String CREATE_TRIGGER_DELETE_FORECAST_DAY = " create trigger SyncDayForecastDelete " +
+            "before delete on CurrentCity " +
+            "for each row " +
+            "begin " +
+            "delete from ForecastDay where id = old.id; " +
             "end;";
 }

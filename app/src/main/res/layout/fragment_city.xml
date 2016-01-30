@@ -8,38 +8,118 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
+    <TextView
+        android:id="@+id/tv_city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"
+        android:textSize="36sp"
+        android:text="@string/null_string" />
+
     <LinearLayout
-        android:id="@+id/layout_head"
+        android:id="@+id/temp_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_city_name"
+            android:id="@+id/tv_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/null_string" />
-
-        <LinearLayout
-            android:id="@+id/temp_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/null_string" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="40sp"
             android:text="@string/null_string" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"
+        android:textSize="30sp"
+        android:text="@string/null_string" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:text="@string/null_string" />
+
+
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/tabHost"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@android:color/darker_gray" />
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@android:color/darker_gray" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/layout_hour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <ListView
+                        android:id="@+id/hour_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <ListView
+                        android:id="@+id/day_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/sun_rise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:text="@string/null_string" />
 </LinearLayout>
