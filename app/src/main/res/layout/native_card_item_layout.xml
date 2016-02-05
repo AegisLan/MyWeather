@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:descendantFocusability= "blocksDescendants">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="10dp"
+        android:id="@+id/tv_city"
+        android:textColor="@color/colorWhite"
+        android:textSize="28sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_city"
+        android:layout_below="@+id/tv_city"
+        android:layout_marginTop="5dp"
+        android:id="@+id/tv_info"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/iv_state"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="80dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/null_string"/>
+
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="0dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tv_temp_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/tv_temp"
+        android:layout_below="@+id/tv_temp"
+        android:layout_marginTop="5dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp" />
+</RelativeLayout>

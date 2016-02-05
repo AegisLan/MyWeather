@@ -24,7 +24,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         initWindow();
     }
 
-    protected int getColor(int res){
+
+    public int getColor(int res){
         if (res <= 0)
             throw new IllegalArgumentException("resource id can not be less 0");
         return getResources().getColor(res);

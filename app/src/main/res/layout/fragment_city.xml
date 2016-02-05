@@ -12,44 +12,30 @@
         android:id="@+id/tv_city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_gravity="center"
-        android:textSize="36sp"
-        android:text="@string/null_string" />
-
-    <LinearLayout
-        android:id="@+id/temp_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="40sp"
-            android:text="@string/null_string" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorDiver"
         android:layout_gravity="center"
         android:textSize="30sp"
         android:text="@string/null_string" />
 
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/tv_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorDiver"
+        android:layout_gravity="center"
         android:textSize="20sp"
         android:text="@string/null_string" />
 
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDiver"
+        android:layout_gravity="center"
+        android:textSize="40sp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/null_string" />
 
     <TabHost
         android:layout_width="match_parent"
@@ -66,7 +52,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@android:color/darker_gray" />
+                android:background="@color/colorDiver" />
 
             <TabWidget
                 android:id="@android:id/tabs"
@@ -76,7 +62,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@android:color/darker_gray" />
+                android:background="@color/colorDiver" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -92,7 +78,8 @@
                     <ListView
                         android:id="@+id/hour_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:divider="@null" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -103,7 +90,8 @@
                     <ListView
                         android:id="@+id/day_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:divider="@null"/>
                 </LinearLayout>
 
             </FrameLayout>
@@ -113,13 +101,31 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@color/colorDiver" />
 
-    <TextView
-        android:id="@+id/sun_rise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:text="@string/null_string" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_wind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/colorDiver"
+            android:textSize="14sp"
+            android:textAlignment="viewStart"
+            android:text="@string/null_string" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/colorDiver"
+            android:textSize="14sp"
+            android:textAlignment="viewEnd"
+            android:text="@string/null_string" />
+    </LinearLayout>
+
 </LinearLayout>

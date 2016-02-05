@@ -6,10 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +17,7 @@ import com.aegisLan.weather.R;
 import com.aegisLan.weather.adapter.SearchAdapter;
 import com.aegisLan.weather.model.City;
 import com.aegisLan.weather.model.CityManager;
+import com.aegisLan.weather.model.WeatherManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +44,12 @@ public class AddCityActivity extends AppCompatActivity {
             }
 
         }
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
         }
+
         @Override
         public void afterTextChanged(Editable s) {
 
@@ -58,7 +59,7 @@ public class AddCityActivity extends AppCompatActivity {
     private void initHotCityList() {
         mListViewLabel.setText(R.string.hot_city);
         mSearchOutList.clear();
-        for (String str:hot_cities) {
+        for (String str : hot_cities) {
             mSearchOutList.add(str);
         }
         adapter.notifyDataSetChanged();
@@ -67,12 +68,11 @@ public class AddCityActivity extends AppCompatActivity {
     private void initSearchOut(List<String> list) {
         mListViewLabel.setText(R.string.search_out);
         mSearchOutList.clear();
-        for (String str:list) {
+        for (String str : list) {
             mSearchOutList.add(str);
         }
         adapter.notifyDataSetChanged();
     }
-
 
 
     @Override
@@ -85,11 +85,11 @@ public class AddCityActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.et_name);
         editText.addTextChangedListener(textWatcher);
         mListViewLabel = (TextView) findViewById(R.id.tv_label);
-        mListView = (ListView) findViewById(R.id.city_view);
+        mListView = (ListView) findViewById(R.id.mlistview);
         mProvince.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(AddCityActivity.this,"按省会查询",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddCityActivity.this, "按省会查询", Toast.LENGTH_SHORT).show();
             }
         });
         mSearchOutList = new ArrayList<>();
@@ -102,13 +102,17 @@ public class AddCityActivity extends AppCompatActivity {
                 String name = mSearchOutList.get(position);
                 City city = CityManager.FindCity(AddCityActivity.this, name);
                 if (city != null) {
-                    Intent intent = new Intent();
-                    intent.putExtra("name", city.getName());
-                    intent.putExtra("id", city.getId());
-                    intent.putExtra("pinyin", city.getPinyin());
-                    intent.putExtra("province", city.getProvince());
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    if (WeatherManager.QueryCity(AddCityActivity.this, city.getId())) {
+                        Toast.makeText(AddCityActivity.this, city.getName() + "已经存在...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent();
+                        intent.putExtra("name", city.getName());
+                        intent.putExtra("id", city.getId());
+                        intent.putExtra("pinyin", city.getPinyin());
+                        intent.putExtra("province", city.getProvince());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
                 }
             }
         });

@@ -20,9 +20,12 @@ public class WeatherManager {
         values.put("name", info.getName());
         values.put("temp", info.getTemp());
         values.put("state", info.getState());
+        values.put("stateCode", info.getStateCode());
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
+        values.put("tempMax", info.getTempMax());
+        values.put("tempMin", info.getTempMin());
         Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         resolver.insert(uri, values);
     }
@@ -40,12 +43,25 @@ public class WeatherManager {
         values.put("name", info.getName());
         values.put("temp", info.getTemp());
         values.put("state", info.getState());
+        values.put("stateCode", info.getStateCode());
         values.put("wind", info.getWind());
         values.put("windStrong", info.getWindStrong());
         values.put("time", info.getTime());
+        values.put("tempMax", info.getTempMax());
+        values.put("tempMin", info.getTempMin());
         Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + info.getId());
         int count = resolver.update(uri, values, null, null);
         return count;
+    }
+
+    public static boolean QueryCity(Context context, int id) {
+        ContentResolver resolver = context.getContentResolver();
+        Uri uri = Uri.parse("content://com.aegisLan.weather.provider.WeatherInfoProvider/WeatherDay/" + id);
+        Cursor cursor = resolver.query(uri, null, null, null, null);
+        if(cursor != null && cursor.moveToNext()) {
+            return true;
+        }
+        return false;
     }
 
     public static WeatherInfo QueryCityWeather(Context context, int id) {
@@ -59,9 +75,12 @@ public class WeatherManager {
             info.setName(cursor.getString(cursor.getColumnIndex("name")));
             info.setTemp(cursor.getInt(cursor.getColumnIndex("temp")));
             info.setState(cursor.getString(cursor.getColumnIndex("state")));
+            info.setStateCode(cursor.getInt(cursor.getColumnIndex("stateCode")));
             info.setWind(cursor.getString(cursor.getColumnIndex("wind")));
             info.setWindStrong(cursor.getString(cursor.getColumnIndex("windStrong")));
             info.setTime(cursor.getString(cursor.getColumnIndex("time")));
+            info.setTempMax(cursor.getInt(cursor.getColumnIndex("tempMax")));
+            info.setTempMin(cursor.getInt(cursor.getColumnIndex("tempMin")));
             cursor.close();
         }
         return info;

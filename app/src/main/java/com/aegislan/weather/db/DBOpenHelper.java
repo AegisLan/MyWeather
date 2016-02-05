@@ -20,7 +20,7 @@ import java.util.List;
 public class DBOpenHelper extends SQLiteOpenHelper {
     private final static String TAG = "DBOpenHelper";
     private static String name = "weather.db";
-    private static int version = 2;
+    private static int version = 3;
 
     public DBOpenHelper(Context context) {
         super(context, name, null, version);
@@ -45,6 +45,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 db.execSQL(CREATE_FORECAST_DAY);
                 db.execSQL(CREATE_TRIGGER_DELETE_FORECAST_HOUR);
                 db.execSQL(CREATE_TRIGGER_DELETE_FORECAST_DAY);
+            case 2:
+                db.execSQL(UPDATE_WEATHER_INFO_TEMPMAX);
+                db.execSQL(UPDATE_WEATHER_INFO_TEMPMIN);
         }
     }
     private int InitCityTable(SQLiteDatabase db) {
@@ -87,8 +90,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + "name text)";
 
     public static final String CREATE_WEATHER_DAY = "create table WeatherDay ("
-            + "id integer primary key, " + "name text, " + "temp integer NULL, "
-            + "state text NULL, "+ "wind text NULL, " + "windStrong text NULL, " + "time text NULL)";
+            + "id integer primary key, " + "name text, " + "temp integer NULL, " + "state text NULL, "
+            + "stateCode integer NULL, " + "wind text NULL, " + "windStrong text NULL, " + "time text NULL)";
 
     public static final String CREATE_TRIGGER_INSERT = " create trigger SyncWeatherInsert " +
             "after insert on CurrentCity " +
@@ -127,4 +130,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             "begin " +
             "delete from ForecastDay where id = old.id; " +
             "end;";
+
+    public static final String UPDATE_WEATHER_INFO_TEMPMAX = "alter table WeatherDay add column tempMax integer NULL;";
+    public static final String UPDATE_WEATHER_INFO_TEMPMIN = "alter table WeatherDay add column tempMin integer NULL;";
 }

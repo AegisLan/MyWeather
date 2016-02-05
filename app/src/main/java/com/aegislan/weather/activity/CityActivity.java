@@ -1,27 +1,33 @@
 package com.aegisLan.weather.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aegisLan.weather.R;
+import com.aegisLan.weather.WeatherApplication;
 import com.aegisLan.weather.adapter.DayWeatherAdapter;
 import com.aegisLan.weather.adapter.HourWeatherAdapter;
 import com.aegisLan.weather.model.DayForecastInfo;
@@ -74,10 +80,12 @@ public class CityActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 // Handle the menu item
                 switch (item.getItemId()) {
-                    case R.id.action_settings:
-                        return true;
                     case R.id.action_refresh:
-
+                        int[] arrayId = new int[1];
+                        SectionsPagerAdapter adapter = (SectionsPagerAdapter) mViewPager.getAdapter();
+                        PlaceholderFragment fragment = adapter.getCurrentFragment();
+                        arrayId[0] = fragment.mCityId;
+                        WeatherInfoRequest.RefreshWeatherInfo(CityActivityHandler.WEATHER_UPDATE, mHandler, arrayId);
                     default:
                         return false;
                 }
@@ -104,13 +112,19 @@ public class CityActivity extends BaseActivity {
         private TextView mTvCityName;
         private TextView mTvCityTemp;
         private TextView mTvCityState;
+        private TextView mTvCityTime;
+        private TextView mTvCityWind;
         private TabHost mTabHost;
         private ListView mHourListView;
         private ListView mDayListView;
         private HourWeatherAdapter mHourAdapter;
         private DayWeatherAdapter mDayAdapter;
-
         public PlaceholderFragment() {
+        }
+
+        private int dp2px(int dp) {
+            return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                    getResources().getDisplayMetrics());
         }
 
         public static PlaceholderFragment newInstance(int cityId) {
@@ -134,18 +148,28 @@ public class CityActivity extends BaseActivity {
             mTvCityName = (TextView) rootView.findViewById(R.id.tv_city_name);
             mTvCityTemp = (TextView) rootView.findViewById(R.id.tv_temp);
             mTvCityState = (TextView) rootView.findViewById(R.id.tv_state);
+            mTvCityWind = (TextView) rootView.findViewById(R.id.tv_wind);
+            mTvCityTime = (TextView) rootView.findViewById(R.id.tv_time);
             mTabHost =(TabHost) rootView.findViewById(R.id.tabHost);
             mTabHost.setup();
             mTabHost.addTab(mTabHost.newTabSpec(TAB_HOUR).setIndicator("小时").setContent(R.id.layout_hour));
             mTabHost.addTab(mTabHost.newTabSpec(TAB_DAY).setIndicator("天").setContent(R.id.layout_day));
+            TabWidget tabWidget = mTabHost.getTabWidget();
+            for (int i = 0; i < tabWidget.getChildCount(); i++) {
+                tabWidget.getChildAt(i).getLayoutParams().height = dp2px(40);
+                TextView tv = (TextView) tabWidget.getChildAt(i).findViewById(android.R.id.title);
+                tv.setGravity(BIND_AUTO_CREATE);
+                tv.setTextSize(16);//设置字体的大小；
+                tv.setTextColor(getResources().getColor(R.color.colorDiver));//设置字体的颜色；
+            }
             mHourListView = (ListView) rootView.findViewById(R.id.hour_view);
             mDayListView = (ListView) rootView.findViewById(R.id.day_view);
             mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
                 @Override
                 public void onTabChanged(String tabId) {
-                    if(tabId.equals(TAB_HOUR)) {
+                    if (tabId.equals(TAB_HOUR)) {
 
-                    }else if(tabId.equals(TAB_DAY)) {
+                    } else if (tabId.equals(TAB_DAY)) {
 
                     }
                 }
@@ -156,6 +180,17 @@ public class CityActivity extends BaseActivity {
                 mTvCityName.setText(mWeatherInfo.getName());
                 mTvCityTemp.setText(mWeatherInfo.getTemp() + "℃");
                 mTvCityState.setText(mWeatherInfo.getState());
+                if(mWeatherInfo.getTime() != null && !mWeatherInfo.getTime().equals("")) {
+                    String[] times = mWeatherInfo.getTime().split(" ");
+                    if(times.length > 1) {
+                        mTvCityTime.setText("更新于" + times[1]);
+                    }else {
+                        mTvCityTime.setText("未更新");
+                    }
+                }else {
+                    mTvCityTime.setText("未更新");
+                }
+                mTvCityWind.setText(mWeatherInfo.getWind());
             }
             /***********************初始化小时预报数据*************************/
             List<HourForecastInfo> hourForecastInfoList = WeatherManager.QueryCityHourWeatherForecast(getActivity(), mCityId);
@@ -168,10 +203,32 @@ public class CityActivity extends BaseActivity {
 
             return rootView;
         }
+        private void updateWeatherInfo() {
+            /***********************初始化数据*************************/
+            mWeatherInfo = WeatherManager.QueryCityWeather(getActivity(), mCityId);
+            if (mWeatherInfo != null) {
+                mTvCityName.setText(mWeatherInfo.getName());
+                mTvCityTemp.setText(mWeatherInfo.getTemp() + "℃");
+                mTvCityState.setText(mWeatherInfo.getState());
+                mTvCityTime.setText("更新于" + mWeatherInfo.getTime().split(" ")[1]);
+                mTvCityWind.setText(mWeatherInfo.getWind());
+            }
+            /***********************初始化小时预报数据*************************/
+            List<HourForecastInfo> hourForecastInfoList = WeatherManager.QueryCityHourWeatherForecast(getActivity(), mCityId);
+            mHourAdapter.clear();
+            mHourAdapter.addAll(hourForecastInfoList);
+            mHourAdapter.notifyDataSetChanged();
+            /***********************初始化每天预报数据*************************/
+            List<DayForecastInfo> dayForecastInfoList = WeatherManager.QueryCityDayWeatherForecast(getActivity(), mCityId);
+            mDayAdapter.clear();
+            mDayAdapter.addAll(dayForecastInfoList);
+            mDayAdapter.notifyDataSetChanged();
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         private int[] arrayIndex;
+        private PlaceholderFragment currentFragment;
 
         public void setArrayIndex(int[] arrayIndex) {
             this.arrayIndex = arrayIndex;
@@ -179,6 +236,16 @@ public class CityActivity extends BaseActivity {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        public PlaceholderFragment getCurrentFragment() {
+            return currentFragment;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            currentFragment = (PlaceholderFragment) object;
+            super.setPrimaryItem(container, position, object);
         }
 
         @Override
@@ -222,6 +289,10 @@ public class CityActivity extends BaseActivity {
                     int cityId = theActivity.mArrayCityId[position];
                     if (cityId == msg.arg1) {
                         // TODO: 2016.1.23  刷新界面
+                        SectionsPagerAdapter adapter = (SectionsPagerAdapter) theActivity.mViewPager.getAdapter();
+                        PlaceholderFragment fragment = adapter.getCurrentFragment();
+                        fragment.updateWeatherInfo();
+                        Toast.makeText(theActivity,"刷新成功",Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

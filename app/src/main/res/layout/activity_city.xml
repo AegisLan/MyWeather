@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="@color/city_background"
+    android:background="@drawable/gradient_bg"
     tools:context="com.weather.aegisLan.activity.CityActivity">
 
     <android.support.v7.widget.Toolbar

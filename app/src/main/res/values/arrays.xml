@@ -3,4 +3,47 @@
     <integer-array name="refresh_colors">
         <item>@color/colorAppPrimary</item>
     </integer-array>
+
+    <integer-array name="city_card_colors">
+        <item>@color/color0</item>
+        <item>@color/color1</item>
+        <item>@color/color2</item>
+        <item>@color/color3</item>
+        <item>@color/color4</item>
+        <item>@color/color5</item>
+        <item>@color/color6</item>
+        <item>@color/color7</item>
+        <item>@color/color8</item>
+        <item>@color/color9</item>
+    </integer-array>
+
+    <integer-array name="weather_image">
+        <item>@drawable/cloud</item>
+        <item>@drawable/clouddark</item>
+        <item>@drawable/clouddarkfog</item>
+        <item>@drawable/clouddarklightning</item>
+        <item>@drawable/clouddarklightningrain</item>
+        <item>@drawable/clouddarklightningsnow</item>
+        <item>@drawable/clouddarkmultiplelightning</item>
+        <item>@drawable/clouddarkrain</item>
+        <item>@drawable/clouddarksnow</item>
+        <item>@drawable/clouddrizzle</item>
+        <item>@drawable/cloudfog</item>
+        <item>@drawable/cloudrain</item>
+        <item>@drawable/cloudsnow</item>
+        <item>@drawable/sunbig</item>
+        <item>@drawable/sunbigcloud</item>
+        <item>@drawable/sunbigclouddark</item>
+        <item>@drawable/sunbigclouddrizzle</item>
+        <item>@drawable/sunrayscloud</item>
+        <item>@drawable/sunraysclouddark</item>
+        <item>@drawable/sunraysclouddrizzle</item>
+        <item>@drawable/sunraysmedium</item>
+        <item>@drawable/sunrayssmall</item>
+        <item>@drawable/sunrayssmallcloud</item>
+        <item>@drawable/sunrayssmallclouddark</item>
+        <item>@drawable/sunsmallcloud</item>
+        <item>@drawable/sunsmallclouddark</item>
+    </integer-array>
+
 </resources>

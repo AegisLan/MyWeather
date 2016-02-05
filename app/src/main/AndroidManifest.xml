@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.aegisLan.weather.activity.MainActivity" >
+            android:name="com.aegisLan.weather.activity.MainActivity">
             <data android:mimeType="vnd.android.cursor.dir/CurrentCities" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

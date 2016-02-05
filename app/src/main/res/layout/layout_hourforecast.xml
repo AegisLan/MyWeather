@@ -8,7 +8,8 @@
         android:id="@+id/tv_hourTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
+        android:textColor="@color/colorDiver"
+        android:textSize="24sp"
         android:layout_weight="1"
         android:textAlignment="viewStart" />
     <TextView
@@ -16,7 +17,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="18sp"
+        android:textColor="@color/colorDiver"
+        android:textSize="20sp"
         android:textAlignment="center" />
     <LinearLayout
         android:layout_width="0dp"
@@ -28,12 +30,14 @@
             android:id="@+id/tv_hourRainRate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDiver"
             android:textSize="16sp"
             android:textAlignment="viewEnd" />
         <TextView
             android:id="@+id/tv_hourHum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDiver"
             android:textSize="16sp"
             android:textAlignment="viewEnd" />
     </LinearLayout>

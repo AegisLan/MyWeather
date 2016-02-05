@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.aegisLan.weather.WeatherApplication;
+import com.aegisLan.weather.util.CalendarTools;
 import com.aegisLan.weather.util.HttpUtil;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -105,9 +106,19 @@ public class WeatherInfoRequest {
             info.setName(heJsonBean.getBasic().getCity());
             info.setTemp(heJsonBean.getNow().getTmp());
             info.setState(heJsonBean.getNow().getCond().getTxt());
+            info.setStateCode(heJsonBean.getNow().getCond().getCode());
             info.setWind(heJsonBean.getNow().getWind().getDir());
             info.setWindStrong(heJsonBean.getNow().getWind().getSc() + "级");
             info.setTime(heJsonBean.getBasic().getUpdate().getLoc());
+            HeJsonBean.Daily_forecast[] daily_forecasts = heJsonBean.getDaily_forecast();
+            for(int i = 0; i < daily_forecasts.length; ++i) {
+                HeJsonBean.Daily_forecast forecast = daily_forecasts[i];
+                if(CalendarTools.isToday(forecast.getDate())) {
+                    info.setTempMax(forecast.getTmp().getMax());
+                    info.setTempMin(forecast.getTmp().getMin());
+                    break;
+                }
+            }
             return info;
         }
 
@@ -144,7 +155,7 @@ public class WeatherInfoRequest {
             List<HourForecastInfo> hourList = updateHourForecastDB(heJsonBean);
             try {
                 int count = WeatherManager.UpdateHourForecast(WeatherApplication.getAppContext(), info.getId(), hourList);
-                if(count == hourList.size()) {
+                if(count != hourList.size()) {
                     Log.e("UpdateHourForecast", "更新条目数不匹");
                 }
             } catch (Exception e) {
@@ -153,7 +164,7 @@ public class WeatherInfoRequest {
             List<DayForecastInfo> dayList = updateDayForecastDB(heJsonBean);
             try {
                 int count = WeatherManager.UpdateDayForecast(WeatherApplication.getAppContext(), info.getId(), dayList);
-                if(count == dayList.size()) {
+                if(count != dayList.size()) {
                     Log.e("UpdateDayForecast","更新条目数不匹配");
                 }
             } catch (Exception e) {

@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAppPrimary">#3F51B5</color>
-    <color name="colorAppPrimaryDark">#303F9F</color>
+    <color name="colorAppPrimary">#008B45</color>
+    <color name="colorAppPrimaryDark">#008B45</color>
     <color name="colorAppAccent">#8B8386</color>
     <color name="colorOtherActivityPrimary">#8B8386</color>
     <color name="colorOtherActivityPrimaryDark">#8B8386</color>
     <color name="colorCityActivity">#00000000</color>
-    <color name="city_background">#EE00B2EE</color>
+    <color name="colorMainActivity">#C2C2C2</color>
+    <color name="city_background">#1874CD</color>
+    <color name="city_card_item">#A4A4A4</color>
+    <color name="city_card_value">#868686</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#1A1A1A</color>
+
+    <color name="color0">#FF3030</color>
+    <color name="color1">#FF4500</color>
+    <color name="color2">#EE7600</color>
+    <color name="color3">#43CD80</color>
+    <color name="color4">#4876FF</color>
+    <color name="color5">#473C8B</color>
+    <color name="color6">#1874CD</color>
+    <color name="color7">#8B4726</color>
+    <color name="color8">#7B68EE</color>
+    <color name="color9">#EE6AA7</color>
+
+    <color name="colorDiver">#DEDEDE</color>
+
 </resources>

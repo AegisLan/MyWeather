@@ -8,7 +8,8 @@
         android:id="@+id/tv_dayTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
+        android:textSize="20sp"
+        android:textColor="@color/colorDiver"
         android:textAlignment="viewStart"
         android:layout_weight="1"/>
     <ImageView
@@ -21,13 +22,15 @@
         android:id="@+id/tv_dayState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorDiver"
         android:textSize="18sp"
         android:layout_gravity="center" />
     <TextView
         android:id="@+id/tv_dayTemp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textColor="@color/colorDiver"
+        android:textSize="20sp"
         android:textAlignment="viewEnd"
         android:layout_weight="1"/>
 
